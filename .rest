@@ -1,0 +1,46 @@
+### GET all persons from phonebook
+GET http://localhost:3001/api/persons
+
+### GET person at id 2
+GET http://localhost:3001/api/persons/2
+
+### GET person at id 5
+GET http://localhost:3001/api/persons/5
+
+### DELETE person at id 1
+DELETE http://localhost:3001/api/persons/1
+
+### Try to add a new person with no info
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+}
+
+### Try to add a new person with no number
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+  "name": "Jack"
+}
+
+### add a new person
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+  "name": "Jack",
+  "number": "1234"
+}
+
+### Try to add a new person with the same name as an existing entry
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+  "name": "Dan Abramov",
+  "number": "1234"
+}
+
+###
