@@ -1,49 +1,40 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
-mongoose.set('strictQuery', false)
+mongoose.set('strictQuery', false);
 
-const url = process.env.MONGODB_URI
+const url = process.env.MONGODB_URI;
 
-console.log('connecting to mongodb at', url)
+console.log('connecting to mongodb at', url);
 
 mongoose.connect(url).then(() => {
-    console.log('Connected to Monogodb')
-}).catch(error => {
-    console.log('Failed to connect to MongoDB', error.message)
-})
+  console.log('Connected to Monogodb');
+}).catch((error) => {
+  console.log('Failed to connect to MongoDB', error.message);
+});
 
 const personSchema = new mongoose.Schema({
-    name: String,
-    number: String,
-})
+  name: {
+    type: String,
+    minLength: 3,
+    required: true,
+  },
+  number: {
+    type: String,
+    validate: {
+      validator: (value) => /\d{3}-\d{3}-\d{4}/.test(value),
+      message: (props) => `${props.value} is not a valid phone number. Should be in the format xxx-xxx-xxxx (hyphens included)`,
+    },
+    required: true,
+  },
+});
 
 personSchema.set('toJSON', {
-    transform: (document, returnedObject) =>{
-        returnedObject.id = returnedObject._id.toString()
-        delete returnedObject._id
-        delete returnedObject.__v
-    }
-})
+  transform: (document, returnedObject) => {
+    const objectRef = returnedObject;
+    objectRef.id = objectRef._id.toString();
+    delete objectRef._id;
+    delete objectRef.__v;
+  },
+});
 
-module.exports = mongoose.model('Person', personSchema)
-
-// if(process.argv.length === 5){
-//     person = new Person({
-//         name: process.argv[3],
-//         number: process.argv[4],
-//     })
-
-//     person.save().then(result =>{
-//         console.log(`added ${person.name} number ${person.number} to phonebook`)
-//         console.log(result)
-//         mongoose.connection.close()
-//     })
-// } else {
-//     Person.find({}).then(result => {
-//         console.log('phonebook:')
-//         result.forEach(person => {
-//             console.log(`${person.name} ${person.number}`)
-//         })
-//         mongoose.connection.close()
-//     })
-//}
+module.exports = mongoose.model('Person', personSchema);
